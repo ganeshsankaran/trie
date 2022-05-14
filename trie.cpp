@@ -9,7 +9,7 @@ TrieNode::TrieNode(char key) {
 }
 
 TrieNode::~TrieNode() {
-    for(auto child : children) {
+    for(auto& child : children) {
         delete child.second;
     }
 }
@@ -24,40 +24,44 @@ Trie::~Trie() {
 
 void Trie::put(const std::string& string) {
     auto node = root;
-    /* Iterate over each character c in the string. */
-    for(auto c : string) {
-        /* If there is no child for c, construct the child */
-        if(!node->children.count(c)) 
+    // Iterate over each character c in the string
+    for(auto& c : string) {
+        // If there is no child for c, construct the child
+        if(!node->children.count(c)) {
             node->children[c] = new TrieNode(c);
-        /* Traverse the trie */
+        }
+        // Traverse the trie
         node = node->children[c];
     }
-    /* Mark the node as the end of a string */ 
+    // Mark the node as the end of a string
     node->end = true;
 }
-
-void Trie::dfs(TrieNode* node, std::string prefix) {
-    /* If the end of a string, add it to the set of strings */
-    if(node->end) 
-        strings.insert(prefix);
-    /* Traverse the subtrie */
-    for(auto child : node->children) 
-        dfs(child.second, prefix + child.second->key);
-}
     
-std::set<std::string> Trie::get(const std::string prefix) {
+std::set<std::string> Trie::get(const std::string& prefix) {
     auto node = root;
-    /* Iterate over each character c in the prefix. */
+    // Iterate over each character c in the prefix
     for(auto c : prefix) {
-        /* If there is no child for c, return the empty set */
-        if(!node->children.count(c)) 
+        // If there is no child for c, return the empty set
+        if(!node->children.count(c)) {
             return std::set<std::string>();
-        /* Traverse the trie */
+        }
+        // Traverse the trie
         node = node->children[c];
     }
-    /* Get all strings in the subtrie with the prefix */
-    strings.clear();
+    // Get all strings in the subtrie with the prefix
+    this->strings.clear();
     dfs(node, prefix);
-    /* Return the set of strings */
-    return strings;
+    // Return the set of strings
+    return this->strings;
+}
+
+void Trie::dfs(TrieNode* node, const std::string& prefix) {
+    // If the end of a string, add it to the set of strings
+    if(node->end) {
+        this->strings.insert(prefix);
+    }
+    // Traverse the subtrie */
+    for(auto child : node->children) {
+        dfs(child.second, prefix + child.second->key);
+    }
 }

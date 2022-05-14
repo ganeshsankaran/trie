@@ -20,10 +20,11 @@ int main() {
     };
 
     Trie trie;
-    for(auto string : strings)
+    
+    for(auto& string : strings)
         trie.put(string);
 
-    for(auto string : trie.get("wh"))
+    for(auto& string : trie.get("wh"))
         std::cout << string << std::endl;
 
     return 0;
